@@ -8,24 +8,19 @@ public class MainManager : MonoBehaviour
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
-
     public Text ScoreText;
     private int m_Points;
-
     public Text HighScoreText;
     private int m_HighScore;
     private const string HighScoreKey = "HighScore";
-
     public TMP_InputField playerNameInputField;
     private const string PlayerNamekey = "PlayerName";
     private string PlayerName = "_name";
-
     public GameObject GameOverText;
     public GameObject input_UI;
     private bool m_Started = false;
     private bool m_GameOver = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         const float step = 0.6f;
@@ -44,12 +39,10 @@ public class MainManager : MonoBehaviour
         }
 
         // Getting high score
-        m_HighScore = PlayerPrefs.GetInt(HighScoreKey, 0);
-        PlayerName = PlayerPrefs.GetString(PlayerNamekey, "_name");
-        HighScoreText.text = $"High Score: {PlayerName}: {m_HighScore}";
+        UpdateHighScoreText();
     }
 
-    private void Update()
+    void Update()
     {
         if (!m_Started)
         {
@@ -89,20 +82,27 @@ public class MainManager : MonoBehaviour
             PlayerName = playerNameInputField.text;
             PlayerPrefs.SetString(PlayerNamekey, PlayerName);
             PlayerPrefs.Save();
-            HighScoreText.text = $"High Score: {PlayerName}: {m_HighScore}";
+            UpdateHighScoreText();
         }
+    }
+
+    void UpdateHighScoreText()
+    {
+        m_HighScore = PlayerPrefs.GetInt(HighScoreKey, 0);
+        PlayerName = PlayerPrefs.GetString(PlayerNamekey, "_name");
+        HighScoreText.text = $"High Score: {PlayerName}: {m_HighScore}";
+        PresistData.instance.PresText = HighScoreText.text;
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        if (m_Points>m_HighScore)
+        if (m_Points > m_HighScore)
         {
-            input_UI.SetActive(true); // Show the input field
-             playerNameInputField.text = PlayerName; // Set input field text to current player name
+            input_UI.SetActive(true);
+            playerNameInputField.text = PlayerName;
         }
-        
     }
 
     public void OkButtonClicked()
@@ -110,8 +110,8 @@ public class MainManager : MonoBehaviour
         PlayerName = playerNameInputField.text;
         PlayerPrefs.SetString(PlayerNamekey, PlayerName);
         PlayerPrefs.Save();
-        input_UI.SetActive(false); // Hide the input field
-        HighScoreText.text = $"High Score: {PlayerName}: {m_HighScore}"; // Update high score text with new player name
+        input_UI.SetActive(false);
+        HighScoreText.text = $"High Score: {PlayerName}: {m_HighScore}";
     }
 
     public void BackButton()

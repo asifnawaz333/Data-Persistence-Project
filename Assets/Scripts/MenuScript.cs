@@ -1,23 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-#if UNITY_EDITOR
-#endif
+using UnityEngine.UI;
+
 public class MenuScript : MonoBehaviour
 {   
+    public Text highScoreText;
+    private string myText;
+    private string textkey = "Mykey";
+
+    void Start()
+    {
+        myText = null;
+        PlayerPrefs.SetString(textkey,myText);
+        PlayerPrefs.Save();
+        ShowHighScore();         
+    }
+
+    private void ShowHighScore()
+    {
+        highScoreText.text = PresistData.instance.PresText;
+        myText = highScoreText.text;
+         PlayerPrefs.GetString(textkey,myText);
+        PlayerPrefs.Save();
+    }
+
     public void StartButton()
     {
         SceneManager.LoadScene(1);
     }
+
     public void Exit()
     {
         #if UNITY_EDITOR
-            EditorApplication.ExitPlaymode();
+            UnityEditor.EditorApplication.ExitPlaymode();
         #else
             Application.Quit();
         #endif
     }
-
 }
